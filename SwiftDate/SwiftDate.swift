@@ -1033,8 +1033,6 @@ public extension NSDate {
 
 //MARK: PRIVATE ACCESSORY METHODS
 
-private var swiftDateNSDateFormatterKey: UInt8 = 0
-
 private extension NSDate {
 	
 	private class func components(fromDate fromDate: NSDate) -> NSDateComponents! {
@@ -1084,16 +1082,6 @@ private extension NSDate {
             return newObject
         }
 	}
-    
-    private var cachedDateFormatter: NSDateFormatter?
-        {
-        get {
-            return objc_getAssociatedObject(self, &swiftDateNSDateFormatterKey) as? NSDateFormatter
-        }
-        set {
-            objc_setAssociatedObject(self, &swiftDateNSDateFormatterKey, newValue, .OBJC_ASSOCIATION_RETAIN)
-        }
-    }
 	
 	/**
 	Return a thread-cached NSDateFormatter instance
@@ -1101,20 +1089,17 @@ private extension NSDate {
 	:returns: instance of NSDateFormatter
 	*/
 	private class func localThreadDateFormatter() -> NSDateFormatter {
-        if let cachedDateFormatter = NSDate().cachedDateFormatter {
-            return cachedDateFormatter
-        } else {
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            NSDate().cachedDateFormatter = dateFormatter
-            return dateFormatter
-        }
-		//return NSDate.cachedObjectInCurrentThread("com.library.swiftdate.dateformatter") {
-//			let dateFormatter = NSDateFormatter()
-//			dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-//			return dateFormatter
-		//}
+        return SwiftDate.sharedDelegate.dateFormatter
 	}
+}
+
+class SwiftDate {
+    static var sharedDelegate = SwiftDate()
+    var dateFormatter = NSDateFormatter()
+    
+    init() {
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    }
 }
 
 //MARK: RELATIVE NSDATE CONVERSION PRIVATE METHODS
