@@ -1073,7 +1073,7 @@ private extension NSDate {
 	:returns: a cached instance of the object
 	*/
 	private class func cachedObjectInCurrentThread<T: AnyObject>(key: String, create: () -> T) -> T {
-		if let threadDictionary = NSThread.currentThread().threadDictionary as NSMutableDictionary? {
+        var threadDictionary = NSThread.currentThread().threadDictionary as [NSObject : AnyObject] //{
 			if let cachedObject = threadDictionary[key] as! T? {
 				return cachedObject
 			} else {
@@ -1081,10 +1081,10 @@ private extension NSDate {
 				threadDictionary[key] = newObject
 				return newObject
 			}
-		} else {
-			assert(false, "Current NSThread dictionary is nil. This should never happens, we will return a new instance of the object on each call")
-			return create()
-		}
+//		} else {
+//			assert(false, "Current NSThread dictionary is nil. This should never happens, we will return a new instance of the object on each call")
+//			return create()
+//		}
 	}
 	
 	/**
@@ -1093,11 +1093,11 @@ private extension NSDate {
 	:returns: instance of NSDateFormatter
 	*/
 	private class func localThreadDateFormatter() -> NSDateFormatter {
-		//return NSDate.cachedObjectInCurrentThread("com.library.swiftdate.dateformatter") {
+		return NSDate.cachedObjectInCurrentThread("com.library.swiftdate.dateformatter") {
 			let dateFormatter = NSDateFormatter()
 			dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 			return dateFormatter
-		//}
+		}
 	}
 }
 
