@@ -1070,16 +1070,18 @@ private extension NSDate {
 	:returns: instance of NSDateFormatter
 	*/
 	private class func localThreadDateFormatter() -> NSDateFormatter {
-        return SwiftDate.sharedSwiftDate.dateFormatter
+        return SwiftDate.sharedSwiftDate.dateFormatter()
 	}
 }
 
 class SwiftDate {
     static let sharedSwiftDate = SwiftDate()
-    let dateFormatter = NSDateFormatter()
+    private let cachedDateFormatter = NSDateFormatter()
     
-    init() {
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    func dateFormatter() -> NSDateFormatter {
+        cachedDateFormatter.timeZone = NSTimeZone.localTimeZone()
+        cachedDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        return cachedDateFormatter
     }
 }
 
