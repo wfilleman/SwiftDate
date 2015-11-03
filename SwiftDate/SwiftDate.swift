@@ -1073,18 +1073,14 @@ private extension NSDate {
 	:returns: a cached instance of the object
 	*/
     private class func cachedObjectInCurrentThread<T: AnyObject>(key: String, create: () -> T) -> T {
-        let threadDictionary = NSThread.currentThread().threadDictionary //{
-        if let cachedObject = threadDictionary[key] as! T? {
+        let threadDictionary = NSThread.currentThread().threadDictionary
+        if let cachedObject = threadDictionary.objectForKey(key) as! T? {
             return cachedObject
         } else {
             let newObject = create()
-            threadDictionary[key] = newObject
+            threadDictionary.setObject(newObject, forKey: key)
             return newObject
         }
-//		} else {
-//			assert(false, "Current NSThread dictionary is nil. This should never happens, we will return a new instance of the object on each call")
-//			return create()
-//		}
 	}
 	
 	/**
