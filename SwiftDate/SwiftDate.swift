@@ -1093,11 +1093,11 @@ private extension NSDate {
 	:returns: instance of NSDateFormatter
 	*/
 	private class func localThreadDateFormatter() -> NSDateFormatter {
-		return NSDate.cachedObjectInCurrentThread("com.library.swiftdate.dateformatter") {
+		//return NSDate.cachedObjectInCurrentThread("com.library.swiftdate.dateformatter") {
 			let dateFormatter = NSDateFormatter()
 			dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 			return dateFormatter
-		}
+		//}
 	}
 }
 
