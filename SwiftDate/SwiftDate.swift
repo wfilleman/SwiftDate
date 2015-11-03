@@ -1065,37 +1065,18 @@ private extension NSDate {
 	}
 	
 	/**
-	This function uses NSThread dictionary to store and retrive a thread-local object, creating it if it has not already been created
-	
-	:param: key    identifier of the object context
-	:param: create create closure that will be invoked to create the object
-	
-	:returns: a cached instance of the object
-	*/
-    private class func cachedObjectInCurrentThread<T: AnyObject>(key: String, create: () -> T) -> T {
-        let threadDictionary = NSThread.currentThread().threadDictionary
-        if let cachedObject = threadDictionary.objectForKey(key) as! T? {
-            return cachedObject
-        } else {
-            let newObject = create()
-            threadDictionary.setObject(newObject, forKey: key)
-            return newObject
-        }
-	}
-	
-	/**
-	Return a thread-cached NSDateFormatter instance
+	Return a Singleton-cached NSDateFormatter instance
 	
 	:returns: instance of NSDateFormatter
 	*/
 	private class func localThreadDateFormatter() -> NSDateFormatter {
-        return SwiftDate.sharedDelegate.dateFormatter
+        return SwiftDate.sharedSwiftDate.dateFormatter
 	}
 }
 
 class SwiftDate {
-    static var sharedDelegate = SwiftDate()
-    var dateFormatter = NSDateFormatter()
+    static let sharedSwiftDate = SwiftDate()
+    let dateFormatter = NSDateFormatter()
     
     init() {
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
